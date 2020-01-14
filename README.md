@@ -1,2 +1,2 @@
 # bimedit
-Yksinkertainen binäärisen ASCII-grafiikan kuvankäsittelyohjelma.
+Simple image processing program for binary ASCII-graphics.
