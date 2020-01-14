@@ -228,6 +228,8 @@ public class BimEdit{
 
     public static String[] tarkistaPitkäKomento(String komento, char[][] taulu){
     // Tarkistaa onko komento kaksiosainen, ja jos on, sen onko se oikean muotoinen.
+    // Komennon oltava muotoa dilate x tai erode x, siten, että x on pariton luku, joka on
+    // pienempi kuin kuin kuvan leveys tai korkeus, sekä vähintään 3.
     // Tällöin palauttaa komennon alkuosan sisältävän taulukon. Muutoin palauttaa nullin.   
         try{
             String[] osat = komento.split("[ ]");
@@ -256,7 +258,7 @@ public class BimEdit{
         
 
     public static void tulosta2d(char[][] taulu) {
-    // Tulostaa parametrinaan saamansa taulukon alkiot.
+    // Tulostaa parametrinaan saamansa kaksiulotteisen taulukon alkiot.
         if (taulu != null) {
             for (int ind = 0; ind < taulu.length; ind++) {
                 System.out.print(taulu[ind]);
