@@ -3,6 +3,12 @@
 // Harjoitustyö.
 //
 // Juha Lähteenmäki (juha.lahteenmaki@tuni.fi).
+//
+// Lataa komentoriviparametrina annetun tekstitiedoston sisältämän vaatimusten mukaisen binäärisen ASCII-kuvan,
+// sekä samassa tekstitiedostossa annetut kuvan tiedot. Komentoriviparametrina annetulla "echo" -komennolla 
+// kaiuttaa saamansa komennot. Suorittaa seuraavat toiminnot: kuvan tulostus näytölle (print),
+// kuvan merkkien kääntäminen (invert), kuvan koon ja merkkimäärien tulostaminen (info), edustamerkkien lisääminen (dilate),
+// taustamerkkien lisääminen (erode), kuvan uudelleen lataaminen tiedostosta (load), sekä ohjelman sulkeminen (quit).
 
 
 import java.util.Scanner;
