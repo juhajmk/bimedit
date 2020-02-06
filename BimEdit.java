@@ -30,12 +30,12 @@ public class BimEdit{
     public static final char[] MERKIT = new char[2];
     public static final int[] KOKO = new int[2];
 
-
-    public static char[][] lataaKuvaTaulukkoon(String tiedostonimi) {
+    
     // Luo kaksiulotteisen char-alkioiden taulukon parametrina saamansa tiedosto-
     // nimen osoittaman tiedoston sisältämästä mallitaulukosta. Lisäksi täyttää kaksi yksiulotteista
     // aputaulukkoa, jotka sisältävät tiedostosta luettavat rivi- ja sarakekoot sekä
-    // taulukossa käytetyt kaksi merkkiä. Lisäksi hylkää vääränmuotoiset taulukot.    
+    // taulukossa käytetyt kaksi merkkiä. Lisäksi hylkää vääränmuotoiset taulukot.  
+    public static char[][] lataaKuvaTaulukkoon(String tiedostonimi) {  
         try {
             File tiedosto = new File(tiedostonimi);
             Scanner tiedostonLukija = new Scanner(tiedosto);      
@@ -93,10 +93,10 @@ public class BimEdit{
     }
     
     
-    public static boolean tarkistaTaulukko(char[][] taulu){
     // Tarkistaa että parametrinä annetussa taulukossa on vain 
     // aputaulukossa määriteltyjä merkkejä, ja että taulukon rivimäärä
     // on sama kuin tiedoston alkutiedoissa. Palauttaa true, jos kaikki on kunnossa.
+    public static boolean tarkistaTaulukko(char[][] taulu){
         Boolean tarkista = true;
         if (taulu != null){
             if (taulu.length != KOKO[0]){
@@ -117,11 +117,11 @@ public class BimEdit{
         }
     }    
 
-
-    public static void laskeJaTulostaMerkit(char[][] taulu){
+    
     // Laskee ja tulostaa parametrinä saamansa taulukon
     // edusta- ja taustamerkkien määrän, sekä tulostaa 
     // aputaulukoiden perusteella taulukon rivi- ja sarakemäärään.
+    public static void laskeJaTulostaMerkit(char[][] taulu){
         if (taulu != null){
             char tausta = MERKIT[0];
             char edusta = MERKIT[1];
@@ -145,11 +145,11 @@ public class BimEdit{
         }    
     }
 
-
-    public static void vaihdaMerkit(char[][] taulu){
+    
     // Saa parametrinaan kaksiulotteisen taulukon ja
     // korvaa kaikki ensimmäisen merkin esiintymät toisella
     // merkillä ja päinvastoin.
+    public static void vaihdaMerkit(char[][] taulu){
         if(taulu != null && taulu.length > 0 && taulu[0].length > 0){
         // Varmistetaan ettei taulu ole null tai kooltaan 0.
             char tausta = MERKIT[0];
@@ -172,10 +172,10 @@ public class BimEdit{
         }
     }
 
-
-    public static char[][] SuurennaTaiPienennä(char[][] taulu, String[] komento){
+    
     // Suorittaa parametrina saamalleen taulukolle dilaation tai eroosion, riippuen
     // parametrina saamansa komennon sisältävän taulukon komennoista. Palauttaa muutetun taulukon.
+    public static char[][] SuurennaTaiPienennä(char[][] taulu, String[] komento){
         if(taulu != null && taulu.length > 0 && taulu[0].length > 0){
             char tausta = MERKIT[0];
             char edusta = MERKIT[1];
@@ -225,12 +225,12 @@ public class BimEdit{
         }
     }
 
-
-    public static String[] tarkistaPitkäKomento(String komento, char[][] taulu){
+    
     // Tarkistaa onko komento kaksiosainen, ja jos on, sen onko se oikean muotoinen.
     // Komennon oltava muotoa dilate x tai erode x, siten, että x on pariton luku, joka on
     // pienempi kuin kuin kuvan leveys tai korkeus, sekä vähintään 3.
     // Tällöin palauttaa komennon alkuosan sisältävän taulukon. Muutoin palauttaa nullin.   
+    public static String[] tarkistaPitkäKomento(String komento, char[][] taulu){
         try{
             String[] osat = komento.split("[ ]");
             if (osat.length != 2){
@@ -256,9 +256,9 @@ public class BimEdit{
         }
     }
         
-
-    public static void tulosta2d(char[][] taulu) {
+    
     // Tulostaa parametrinaan saamansa kaksiulotteisen taulukon alkiot.
+    public static void tulosta2d(char[][] taulu) {
         if (taulu != null) {
             for (int ind = 0; ind < taulu.length; ind++) {
                 System.out.print(taulu[ind]);
