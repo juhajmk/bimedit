@@ -29,6 +29,7 @@ public class BimEdit{
 
     public static final char[] MERKIT = new char[2];
     public static final int[] KOKO = new int[2];
+    public static final String[] KOMENTO = new String[1];
 
     
     // Luo kaksiulotteisen char-alkioiden taulukon parametrina saamansa tiedosto-
@@ -175,43 +176,40 @@ public class BimEdit{
     
     // Suorittaa parametrina saamalleen taulukolle dilaation tai eroosion, riippuen
     // parametrina saamansa komennon sisältävän taulukon komennoista. Palauttaa muutetun taulukon.
-    public static char[][] SuurennaTaiPienennä(char[][] taulu, String[] komento){
+    public static char[][] suurennaTaiPienennä(char[][] taulu, int dilKoko){
         if(taulu != null && taulu.length > 0 && taulu[0].length > 0){
+            // Alustetaan merkit dilaation vaatimiksi.
             char tausta = MERKIT[0];
             char edusta = MERKIT[1];
-            // alustetaan merkit dilaation vaatimiksi.
            
-            if (komento[0].equals(ERODE)){
+            if (KOMENTO[0].equals(ERODE)){
             // Vaihdetaan merkit päikseen jos komento onkin erode.
                 tausta = MERKIT[1];
                 edusta = MERKIT[0];
             }
             
+            // Luodaan uusi taulukko johon muutokset tehdään, ja
+            // kopioidaan alkuperäisen taulun sisältö uuteen taulukkoon.
             char[][] uusitaulu = new char[taulu.length][taulu[0].length];
             for(int riviInd = 0; riviInd < taulu.length; riviInd++){
                 for(int sarakeInd = 0; sarakeInd < taulu[0].length; sarakeInd++){
                     uusitaulu[riviInd][sarakeInd] = taulu[riviInd][sarakeInd];
                 }
             }
-            // Luodaan uusi taulukko johon muutokset tehdään, ja
-            // kopioidaan alkuperäisen taulun sisältö uuteen taulukkoon.
-            
-            int dilKoko = Integer.parseInt(komento[1]);
-            // Otetaan dilaatiossa käytettävä koko taulukosta.
+            // Lasketaan liikuteltavan neliön keskipisteen lähtökoordinaatit.            
             int keskipiste = (dilKoko - 1) / 2;
-            // Lasketaan liikuteltavan neliön keskipisteen lähtökoordinaatit.
 
             for (int riviInd = keskipiste; riviInd < (taulu.length - keskipiste); riviInd++){
                 for (int sarakeInd = keskipiste; sarakeInd < (taulu[0].length - keskipiste); sarakeInd++){
-                    if (taulu[riviInd][sarakeInd] == tausta){
                     // tutkitaan naapurimerkit jos neliön keskellä on taustamerkki.
+                    if (taulu[riviInd][sarakeInd] == tausta){
                         for (int riviInd2 = riviInd - keskipiste; riviInd2 < (riviInd + keskipiste + 1); riviInd2++){
                             for (int sarakeInd2 = sarakeInd - keskipiste; sarakeInd2 < (sarakeInd + keskipiste + 1)
                                 ; sarakeInd2++){
-                                if(taulu[riviInd2][sarakeInd2] == edusta){
                                 // Tarkistetaan onko naapurimerkeissä edustamerkkejä.
-                                    uusitaulu[riviInd][sarakeInd] = edusta;
+                                if(taulu[riviInd2][sarakeInd2] == edusta){
                                     // Lisätään uuteen taulukkoon muutettu merkki tarvittaessa.
+                                    uusitaulu[riviInd][sarakeInd] = edusta;
                                 }
                             }
                         }
@@ -229,29 +227,32 @@ public class BimEdit{
     // Tarkistaa onko komento kaksiosainen, ja jos on, sen onko se oikean muotoinen.
     // Komennon oltava muotoa dilate x tai erode x, siten, että x on pariton luku, joka on
     // pienempi kuin kuin kuvan leveys tai korkeus, sekä vähintään 3.
-    // Tällöin palauttaa komennon alkuosan sisältävän taulukon. Muutoin palauttaa nullin.   
-    public static String[] tarkistaPitkäKomento(String komento, char[][] taulu){
+    // Tällöin palauttaa dilaatiokoon ja tallentaa dilaatiokomennon KOMENTO -taulukkoon. 
+    // Muutoin palauttaa arvon -1.   
+    public static int tarkistaPitkäKomento(String komento, char[][] taulu){
         try{
             String[] osat = komento.split("[ ]");
             if (osat.length != 2){
-                return null;
+                return -1;
             }
             String alkuKomento = osat[0];
             int dilKoko = Integer.parseInt(osat[1]);
             int tarkistusNro = dilKoko % 2;
             if (dilKoko < 3 || dilKoko > KOKO[0] || dilKoko > KOKO[1] || tarkistusNro == 0){
             // Tarkistaa että numero on määrätynlainen.
-                return null;
+                return -1;
             }
             if ((alkuKomento.equals(DILATE) || alkuKomento.equals(ERODE))){
-            // Tarkistaa että komennon alkuosa on sallittu.
-                return osat;
+            // Tarkistaa että komennon alkuosa on sallittu, paluttaa kokotiedon
+            // ja sijoittaa dilate/erode -tiedon luokkataulukkoon.
+                KOMENTO[0] = alkuKomento;
+                return dilKoko;
             }
             else{
-                return null;
+                return -1;
             }
         } catch (NumberFormatException e){
-            return null;
+            return -1;
             // Hoitaa poikkeuksen jos viimeinen argumentti ei ole int.
         }
     }
@@ -299,26 +300,31 @@ public class BimEdit{
                     if (kaiku){
                         System.out.println(komento);
                     }
-                    String[] pitkäKomento = tarkistaPitkäKomento(komento, kuvataulu);
+                    int dilkoko = tarkistaPitkäKomento(komento, kuvataulu);
                     // Tarkistaa mahdollisen dilaatio- tai eroosiokomennon.
                     if (komento.equals(LOPETA)){
                         System.out.println("Bye, see you soon.");
                         jatketaan = false;
                     }
+                    // Tulostaa kuvataulun sisällön
                     else if (komento.equals(TULOSTA)){
                         tulosta2d(kuvataulu);
                     }
+                    // Tulostaa kuvan merkki- ja kokotiedot.
                     else if (komento.equals(INFO)){
                         laskeJaTulostaMerkit(kuvataulu);
                     }
+                    // Vaihtaa edusta- ja taustamerkit keskenään.
                     else if (komento.equals(KÄÄNNÄ)){
                         vaihdaMerkit(kuvataulu);
                     }
+                    // Lataa kuvan uudelleen tiedostosta.
                     else if (komento.equals(LATAA)){
                         kuvataulu = lataaKuvaTaulukkoon(tiedostonimi);
                     }
-                    else if (pitkäKomento != null){
-                        kuvataulu = SuurennaTaiPienennä(kuvataulu, pitkäKomento);
+                    // Joko suurentaa tai pienentää edustamerkkien alaa.
+                    else if (dilkoko > 0){
+                        kuvataulu = suurennaTaiPienennä(kuvataulu, dilkoko);
                     }
                     else{
                         System.out.println("Invalid command!");
